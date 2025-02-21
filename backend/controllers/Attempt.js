@@ -3,7 +3,6 @@ const Quiz = require("../models/Quiz");
 
 exports.saveAttempt = async (req, res) => {
   try {
-    // Validate required fields from request body
     const { username, quizId, selectedAnswer } = req.body;
     
     if (!username || !quizId || !selectedAnswer) {
@@ -13,7 +12,6 @@ exports.saveAttempt = async (req, res) => {
       });
     }
 
-    // Fetch the quiz to check correct selectedAnswer
     const quiz = await Quiz.findById(quizId);
     if (!quiz) {
       return res.status(404).json({
