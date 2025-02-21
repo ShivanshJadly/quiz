@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { getQuiz } from '../services/operations/quizAPI';
+import { useNavigate } from 'react-router-dom';
+
 const Quiz = () => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(30);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchQuestions() {
@@ -23,6 +27,10 @@ const Quiz = () => {
     }
     fetchQuestions();
   }, []);
+
+  useEffect(() => {
+    setTimeLeft(30); // Reset timer when question changes
+  }, [currentQuestionIndex]);
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -46,8 +54,8 @@ const Quiz = () => {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setTimeLeft(30); // Reset timer for next question
     } else {
-      alert("Quiz Completed!");
-      // Here you can handle the submission of the full quiz
+      alert("Times Up!");
+      handleQuizComplete();
     }
   };
 
@@ -56,7 +64,24 @@ const Quiz = () => {
       alert("Please select an answer first!");
       return;
     }
+    
+    // Check if answer is correct
+    const currentOption = questions[currentQuestionIndex].options.find(opt => opt._id === selectedAnswer);
+    if (!currentOption.isCorrect) {
+      setWrongAttempts(prev => prev + 1);
+    }
+    
     setShowFeedback(true);
+  };
+
+  const handleQuizComplete = () => {
+    navigate('/result', { 
+      state: { 
+        username: 'username_value',
+        totalQuestions: questions.length,
+        wrongAttempts: wrongAttempts
+      } 
+    });
   };
 
   // console.log("questions",questions)
