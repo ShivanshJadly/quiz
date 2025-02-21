@@ -9,7 +9,6 @@ const {
 export const getQuiz = async () => {
     try {
       const response = await apiConnector("GET", GET_QUIZ);
-    //   console.log("response",response)
       return response;
     } catch (error) {
       console.error("Error fetching quizzes:", error);

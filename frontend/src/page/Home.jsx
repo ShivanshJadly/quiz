@@ -19,7 +19,6 @@ const Home = () => {
     const result = await createUser(name);
 
     if (result) {
-      // Save username to Redux store and localStorage
       dispatch(setCredentials({ username: name }));
       alert("User created successfully!");
       navigate("/quiz");

@@ -19,7 +19,7 @@ const Quiz = () => {
     async function fetchQuestions() {
       try {
         const response = await getQuiz();
-        console.log("API Response:", response); // Debug log
+        console.log("API Response:", response);
         if (response?.data?.data) {
           setQuestions(response.data.data);
         } else {
@@ -33,7 +33,7 @@ const Quiz = () => {
   }, []);
 
   useEffect(() => {
-    setTimeLeft(30); // Reset timer when question changes
+    setTimeLeft(30);
   }, [currentQuestionIndex]);
 
   useEffect(() => {
@@ -46,13 +46,13 @@ const Quiz = () => {
   }, [timeLeft]);
 
   const handleNext = () => {
-    // Reset all states related to the current question
+
     setShowFeedback(false);
     setSelectedAnswer(null);
     
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setTimeLeft(30); // Reset timer for next question
+      setTimeLeft(30);
     } else {
       alert("Quiz Complete!");
       handleQuizComplete();
@@ -65,7 +65,6 @@ const Quiz = () => {
       return;
     }
     
-    // Check if answer is correct
     const currentOption = questions[currentQuestionIndex].options.find(opt => opt._id === selectedAnswer);
     const isCorrect = currentOption.isCorrect;
     
