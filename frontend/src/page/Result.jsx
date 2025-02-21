@@ -3,8 +3,8 @@ import Heading from "../components/heading";
 
 const Result = ({ username, score, wrongAttempts, onRetry }) => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#5E35B1]">
-      <section className="text-center text-8xl text-[#FFC107] font-bold bottom-0 right-[42%]">
+    <div className="flex items-center justify-center min-h-screen bg-[#5E35B1] gap-2">
+      <section className="text-center text-8xl text-[#FFC107] font-bold bottom-0 right-[42%] border-r-2 pr-2">
         <h1>Quiz!!</h1>
         <h1>Result</h1>
       </section>
