@@ -1,14 +1,71 @@
 import React, { useState, useEffect } from 'react';
-
+import { getQuiz } from '../services/operations/quizAPI';
 const Quiz = () => {
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(30);
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  useEffect(() => {
+    async function fetchQuestions() {
+      try {
+        const response = await getQuiz();
+        console.log("API Response:", response); // Debug log
+        if (response?.data?.data) {
+          setQuestions(response.data.data);
+        } else {
+          console.error("Invalid response structure:", response);
+        }
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    }
+    fetchQuestions();
+  }, []);
 
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
+    } else {
+      handleNext();
     }
   }, [timeLeft]);
+
+  const handleNext = () => {
+    if (selectedAnswer) {
+      console.log("Submitting answer:", {
+        questionId: questions[currentQuestionIndex]._id,
+        selectedAnswer,
+      });
+      setSelectedAnswer(null); // Reset selected answer
+    }
+
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setTimeLeft(30); // Reset timer for next question
+    } else {
+      alert("Quiz Completed!");
+      // Here you can handle the submission of the full quiz
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!selectedAnswer) {
+      alert("Please select an answer first!");
+      return;
+    }
+    setShowFeedback(true);
+  };
+
+  // console.log("questions",questions)
+
+  if (questions.length === 0) {
+    return <div className="text-center text-white">Loading Quiz...</div>;
+  }
+
+  const currentQuestion = questions[currentQuestionIndex];
 
   return (
     <div className='min-h-screen bg-[#5E35B1] flex justify-center items-center flex-col'>
@@ -19,24 +76,51 @@ const Quiz = () => {
         </span>
       </div>
       <section className='bg-white p-6 rounded-2xl shadow-lg w-96 text-center border-3 border-black'>
-        <h2 className='text-lg font-semibold mb-4'>How are you?</h2>
+        <h2 className='text-lg font-semibold mb-4'>{currentQuestion.question}</h2>
         <div className='flex flex-col gap-2 text-left mt-4'>
-          <label className='bg-gray-100 p-2 rounded cursor-pointer flex items-center'>
-            <input type='radio' name='answer' className='mr-2' /> Good
-          </label>
-          <label className='bg-gray-100 p-2 rounded cursor-pointer flex items-center'>
-            <input type='radio' name='answer' className='mr-2' /> Fine
-          </label>
-          <label className='bg-gray-100 p-2 rounded cursor-pointer flex items-center'>
-            <input type='radio' name='answer' className='mr-2' /> Not Great
-          </label>
-          <label className='bg-gray-100 p-2 rounded cursor-pointer flex items-center'>
-            <input type='radio' name='answer' className='mr-2' /> Bad
-          </label>
+          {currentQuestion.options.map((option) => (
+            <label
+              key={option._id}
+              className={`p-2 rounded cursor-pointer flex items-center ${
+                selectedAnswer === option._id 
+                  ? showFeedback
+                    ? option.isCorrect 
+                      ? "bg-green-200" 
+                      : "bg-red-200"
+                    : "bg-blue-200"
+                  : showFeedback && option.isCorrect
+                  ? "bg-green-200"
+                  : "bg-gray-100"
+              }`}
+            >
+              <input
+                type="radio"
+                name="answer"
+                className="mr-2"
+                value={option._id}
+                checked={selectedAnswer === option._id}
+                onChange={() => !showFeedback && setSelectedAnswer(option._id)}
+                disabled={showFeedback}
+              />
+              {option.text}
+            </label>
+          ))}
         </div>
         <div className='flex justify-between mt-4'>
-          <button className='bg-blue-500 text-white px-4 py-2 rounded-lg'>Next</button>
-          <button className='bg-green-500 text-white px-4 py-2 rounded-lg'>Submit</button>
+          <button 
+            onClick={handleNext} 
+            className='bg-blue-500 text-white px-4 py-2 rounded-lg'
+          >
+            Next
+          </button>
+          {!showFeedback && (
+            <button 
+              onClick={handleSubmit} 
+              className='bg-green-500 text-white px-4 py-2 rounded-lg'
+            >
+              Submit
+            </button>
+          )}
         </div>
       </section>
     </div>

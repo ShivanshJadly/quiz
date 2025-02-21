@@ -9,4 +9,9 @@ export const userEndpoints = {
     GET_USER: BASE_URL + "/userAttempt",
   }
 
+  export const quizEndpoints = {
+    GET_QUIZ: BASE_URL + "/quiz",
+    GET_QUIZ_BY_ID: BASE_URL + "/quiz/:quizId",
+  }
+
   
