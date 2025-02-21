@@ -7,7 +7,8 @@ const attemptSchema = new mongoose.Schema({
     required: true,
   },
   username: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   selectedAnswer: {
