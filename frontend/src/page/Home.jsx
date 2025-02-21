@@ -1,10 +1,25 @@
 import React, { useState } from "react";
 import Rule from "../components/Rule";
+import { createUser } from "../services/operations/authAPI";
+import { useNavigate } from "react-router-dom";
 const Home = () => {
   const [name, setName] = useState("");
+  const navigate = useNavigate(); // Hook for navigation
 
-  const handleSubmit = () => {
-    alert(`Username entered: ${name}`);
+  const handleSubmit = async () => {
+    if (!name.trim()) {
+      alert("Please enter a username.");
+      return;
+    }
+
+    const result = await createUser(name); // Call createUser API
+
+    if (result) {
+      alert("User created successfully!");
+      navigate("/quiz"); // Redirect to quiz page
+    } else {
+      alert("Failed to create user. Try again!");
+    }
   };
 
   return (

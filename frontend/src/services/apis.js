@@ -1,7 +1,12 @@
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-
-export const endpoints = {
+export const attemptEndpoints = {
     SAVE_ATTEMPT: BASE_URL + "/attempt",
-    GET_ATTEMPT: BASE_URL + "/attemptHistory",
   }
+
+export const userEndpoints = {
+    CREATE_USER: BASE_URL + "/user",
+    GET_USER: BASE_URL + "/userAttempt",
+  }
+
+  

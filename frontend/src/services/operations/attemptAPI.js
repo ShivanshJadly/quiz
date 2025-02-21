@@ -1,11 +1,10 @@
 import { apiConnector } from "../apiConnector"
-import { endpoints } from "../apis"
+import { attemptEndpoints } from "../apis"
 
 
 const {
-  SAVE_ATTEMPT,
-  GET_ATTEMPT
-} = endpoints
+  SAVE_ATTEMPT
+} = attemptEndpoints
 
 // Save Attempt API
 export const saveAttempt = async (username, quizId, selectedAnswer) => {
