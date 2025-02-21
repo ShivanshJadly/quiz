@@ -27,11 +27,11 @@ export const createUser = async (username) => {
 
 export const getUser = async (username) => {
   try {
-    const response = await apiConnector("GET", GET_USER, { username });
-
+    const response = await apiConnector("POST", `${GET_USER}/${username}`,{username});
+    
     if (response?.data?.success) {
       console.log("User fetched successfully:", response.data);
-      return response.data.user;
+      return response.data;
     } else {
       console.error("Failed to fetch user:", response);
       return null;
@@ -42,22 +42,22 @@ export const getUser = async (username) => {
   }
 };
 
-export const getAttempts = async (username) => {
-  try {
-    const response = await apiConnector("GET", GET_ATTEMPTS, { username });
+// export const getAttempts = async (username) => {
+//   try {
+//     const response = await apiConnector("GET", GET_ATTEMPTS, { username });
 
-    if (response?.data?.success) {
-      console.log("Attempts fetched successfully:", response.data);
-      return response.data.attempts;  // Array of attempts
-    } else {
-      console.error("Failed to fetch attempts:", response);
-      return [];
-    }
-  } catch (error) {
-    console.error("Error fetching attempts:", error);
-    return [];
-  }
-};
+//     if (response?.data?.success) {
+//       console.log("Attempts fetched successfully:", response.data);
+//       return response.data.attempts;  // Array of attempts
+//     } else {
+//       console.error("Failed to fetch attempts:", response);
+//       return [];
+//     }
+//   } catch (error) {
+//     console.error("Error fetching attempts:", error);
+//     return [];
+//   }
+// };
 
 
 

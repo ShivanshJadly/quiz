@@ -1,7 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Heading from "../components/heading";
+import { getUser } from "../services/operations/authAPI";
+import { selectCurrentUser } from "../slices/authSlice";
 
-const Result = ({ username, score, wrongAttempts, onRetry }) => {
+const Result = () => {
+  const [userData, setUserData] = useState(null);
+  const username = useSelector(selectCurrentUser);
+
+  useEffect(() => {
+    const fetchUserData = async (username) => {
+      try {
+        const response = await getUser(username);
+        console.log("response", response);
+        setUserData(response?.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData(username);
+  }, []);
+
+  const totalScore = userData?.attempts?.reduce((sum, attempt) => sum + (attempt.score || 0), 0) || 0;
+  // console.log("userData",userData);
+  // console.log("totalScore",totalScore);
+
+
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#5E35B1] gap-2">
       <section className="text-center text-8xl text-[#FFC107] font-bold bottom-0 right-[42%] border-r-2 pr-2">
@@ -10,23 +36,15 @@ const Result = ({ username, score, wrongAttempts, onRetry }) => {
       </section>
       <div className="bg-white p-6 rounded-2xl shadow-lg w-80 font-bold">
         <p className="text-xl text-black mt-4">
-          Username: <span className="font-bold">{username}</span>
+          Username: <span className="font-bold">{userData?.username || username}</span>
         </p>
         <p className="text-xl text-black mt-2">
-          Score:{" "}
-          <span className="font-bold">{score}</span>
+          Score: <span className="font-bold">{totalScore*10}</span>
         </p>
+
         <p className="text-xl text-black mt-2">
-          Attempts: <span className="font-bold">{wrongAttempts}</span>
+          Attempts: <span className="font-bold">{userData?.attempts?.length}</span>
         </p>
-        <div className="flex justify-center">
-        <button
-          className="mt-4 px-4 py-2 bg-[#5E35B1] text-white rounded-lg hover:bg-[#4527A0] transition block mx-auto"
-          onClick={onRetry}
-        >
-          Try Again
-        </button>
-        </div>
       </div>
     </div>
   );

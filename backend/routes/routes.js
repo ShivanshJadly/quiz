@@ -10,7 +10,7 @@ const { createUser, getUser } = require("../controllers/User");
 
 // User routes
 router.post("/user", createUser);
-router.get("/userAttempt", getUser);
+router.post("/user/:username", getUser);
 
 // Quiz routes
 router.get("/quiz", getQuiz);

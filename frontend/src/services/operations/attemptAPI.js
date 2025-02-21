@@ -19,8 +19,7 @@ export const saveAttempt = async (username, quizId, selectedAnswer) => {
       if (!response.data.success) {
         throw new Error(response.data.message)
       }
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.error("Error saving attempt:", error);
     return { success: false, message: "Failed to save attempt" };

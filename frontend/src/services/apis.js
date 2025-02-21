@@ -6,7 +6,7 @@ export const attemptEndpoints = {
 
 export const userEndpoints = {
     CREATE_USER: BASE_URL + "/user",
-    GET_USER: BASE_URL + "/userAttempt",
+    GET_USER: BASE_URL + "/user",
   }
 
   export const quizEndpoints = {
