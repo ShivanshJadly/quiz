@@ -12,7 +12,7 @@ exports.saveAttempt = async (req, res) => {
       });
     }
 
-    const quiz = await Quiz.findById(quizId);
+    const quiz = await Quiz.findOne({quizId: quizId});
     if (!quiz) {
       return res.status(404).json({
         success: false,
@@ -20,27 +20,39 @@ exports.saveAttempt = async (req, res) => {
       });
     }
 
-    // Calculate score based on correct selectedAnswer
-    let calculatedScore = 0;
-    selectedAnswer.forEach((answer, index) => {
-      if (quiz.question[index] && answer === quiz.question[index].correctAnswer) {
-        calculatedScore += 1;
-      }
-    });
+    // Find the selected option inside the quiz options
+    const selectedOption = quiz.options.find(
+      (option) => option._id.toString() === selectedAnswer.toString()
+    );
+
+    if (!selectedOption) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid selected answer",
+      });
+    }
+
+    // Check if the selected answer is correct
+    const isCorrect = selectedOption.isCorrect;
+
+    // Calculate score (1 for correct, 0 for incorrect)
+    const score = isCorrect ? 1 : 0;
 
     // Create the attempt with calculated score
     const attempt = await Attempt.create({
-      username,
       quizId,
-      selectedAnswer,
-      score: calculatedScore,
-      submittedAt: new Date()
+      username,
+      selectedAnswer: selectedAnswer,
+      isCorrect,
+      score,
+      submittedAt: new Date(),
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       data: attempt,
-      score: calculatedScore
+      score,
+      message: isCorrect ? "Correct answer!" : "Wrong answer!",
     });
   } catch (error) {
     res.status(500).json({
@@ -58,7 +70,7 @@ exports.getAttempts = async (req, res) => {
     // Build query based on filters
     const query = {};
     if (username) query.username = username;
-    if (quizId) query.quizId = quizId;
+    if (quizId) query.quizId = Number(quizId);
 
     // Calculate skip value for pagination
     const skip = (page - 1) * limit;
@@ -68,7 +80,7 @@ exports.getAttempts = async (req, res) => {
       .sort({ submittedAt: -1 }) // Sort by newest first
       .skip(skip)
       .limit(parseInt(limit))
-      .populate('quizId');
+      // .populate('quizId');
 
     // Get total count for pagination
     const total = await Attempt.countDocuments(query);

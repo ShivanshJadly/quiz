@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const attemptSchema = new mongoose.Schema({
   quizId: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Quiz",
     required: true,
   },
@@ -11,8 +11,9 @@ const attemptSchema = new mongoose.Schema({
     required: true,
   },
   selectedAnswer: {
-    type: String,
-  },
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },  
   isCorrect: {
     type: Boolean,
     default: false,
