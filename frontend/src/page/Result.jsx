@@ -29,12 +29,12 @@ const Result = () => {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#5E35B1]">
-      <section className="text-center text-8xl text-[#FFC107] font-bold bottom-0 right-[42%]">
+    <div className="flex items-center justify-center min-h-screen bg-[#5E35B1] gap-2">
+      <section className="text-center text-8xl text-[#FFC107] font-bold bottom-0 right-[42%] border-r-2 pr-2">
         <h1>Quiz!!</h1>
         <h1>Result</h1>
       </section>
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-80 font-bold">
+      <div className="p-6 rounded-2xl shadow-lg w-80 font-bold border-2 border-black bg-[#FFD54F]">
         <p className="text-xl text-black mt-4">
           Username: <span className="font-bold">{userData?.username || username}</span>
         </p>

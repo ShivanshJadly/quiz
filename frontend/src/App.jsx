@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Home from '../src/page/Home'
 import Quiz from '../src/page/Quiz'
 import Result from '../src/page/Result'
@@ -7,6 +7,8 @@ import PrivateRoute from './components/auth/PrivateRoute'
 import LogoutButton from './components/common/LogoutButton'
 
 function App() {
+  const location = useLocation();
+
   return (
     <div>
       <Routes>
@@ -31,7 +33,7 @@ function App() {
           }
         />
       </Routes>
-      <LogoutButton />
+      {location.pathname !== '/' && <LogoutButton />}
     </div>
   )
 }
