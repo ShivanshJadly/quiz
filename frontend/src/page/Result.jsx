@@ -39,7 +39,7 @@ const Result = () => {
           Username: <span className="font-bold">{userData?.username || username}</span>
         </p>
         <p className="text-xl text-black mt-2">
-          Score: <span className="font-bold">{totalScore}</span>
+          Score: <span className="font-bold">{totalScore*10}</span>
         </p>
 
         <p className="text-xl text-black mt-2">
