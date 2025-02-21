@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getQuiz } from '../services/operations/quizAPI';
 import { useNavigate } from 'react-router-dom';
+import { saveAttempt } from '../services/operations/attemptAPI';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../slices/authSlice';
 
 const Quiz = () => {
   const [questions, setQuestions] = useState([]);
@@ -9,6 +12,7 @@ const Quiz = () => {
   const [timeLeft, setTimeLeft] = useState(30);
   const [showFeedback, setShowFeedback] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
+  const username = useSelector(selectCurrentUser);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,24 +46,20 @@ const Quiz = () => {
   }, [timeLeft]);
 
   const handleNext = () => {
-    if (selectedAnswer) {
-      console.log("Submitting answer:", {
-        questionId: questions[currentQuestionIndex]._id,
-        selectedAnswer,
-      });
-      setSelectedAnswer(null); // Reset selected answer
-    }
-
+    // Reset all states related to the current question
+    setShowFeedback(false);
+    setSelectedAnswer(null);
+    
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setTimeLeft(30); // Reset timer for next question
     } else {
-      alert("Times Up!");
+      alert("Quiz Complete!");
       handleQuizComplete();
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedAnswer) {
       alert("Please select an answer first!");
       return;
@@ -67,8 +67,17 @@ const Quiz = () => {
     
     // Check if answer is correct
     const currentOption = questions[currentQuestionIndex].options.find(opt => opt._id === selectedAnswer);
-    if (!currentOption.isCorrect) {
+    const isCorrect = currentOption.isCorrect;
+    
+    if (!isCorrect) {
       setWrongAttempts(prev => prev + 1);
+    }
+
+    // Save the attempt
+    try {
+      await saveAttempt(username, questions[currentQuestionIndex].quizId, selectedAnswer, isCorrect);
+    } catch (error) {
+      console.error("Error saving attempt:", error);
     }
     
     setShowFeedback(true);
@@ -91,7 +100,7 @@ const Quiz = () => {
   }
 
   const currentQuestion = questions[currentQuestionIndex];
-
+  
   return (
     <div className='min-h-screen bg-[#5E35B1] flex justify-center items-center flex-col'>
       <h1 className='text-8xl font-bold mb-4 text-[#FFC107]'>QUIZ!!</h1>

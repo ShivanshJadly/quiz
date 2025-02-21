@@ -1,8 +1,10 @@
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import Home from '../src/page/Home'
-import Quiz from '../src/page/quiz'
-import Result from '../src/page/result'
+import Quiz from '../src/page/Quiz'
+import Result from '../src/page/Result'
+import PrivateRoute from './components/auth/PrivateRoute'
+import LogoutButton from './components/common/LogoutButton'
 
 function App() {
   return (
@@ -14,13 +16,22 @@ function App() {
         />
         <Route 
           path="/quiz" 
-          element={<Quiz />} 
+          element={
+            <PrivateRoute>
+              <Quiz />
+            </PrivateRoute>
+          } 
         />
         <Route
           path="/result"
-          element={<Result />}
+          element={
+            <PrivateRoute>
+              <Result />
+            </PrivateRoute>
+          }
         />
       </Routes>
+      <LogoutButton />
     </div>
   )
 }

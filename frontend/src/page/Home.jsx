@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import Rule from "../components/Rule";
 import { createUser } from "../services/operations/authAPI";
 import { useNavigate } from "react-router-dom";
+import { setCredentials } from "../slices/authSlice";
+
 const Home = () => {
   const [name, setName] = useState("");
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
     if (!name.trim()) {
@@ -12,11 +16,13 @@ const Home = () => {
       return;
     }
 
-    const result = await createUser(name); // Call createUser API
+    const result = await createUser(name);
 
     if (result) {
+      // Save username to Redux store and localStorage
+      dispatch(setCredentials({ username: name }));
       alert("User created successfully!");
-      navigate("/quiz"); // Redirect to quiz page
+      navigate("/quiz");
     } else {
       alert("Failed to create user. Try again!");
     }
