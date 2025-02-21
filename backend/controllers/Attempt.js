@@ -68,7 +68,7 @@ exports.getAttempts = async (req, res) => {
       .sort({ submittedAt: -1 }) // Sort by newest first
       .skip(skip)
       .limit(parseInt(limit))
-      .populate('quizId'); // Populate quiz title if needed
+      .populate('quizId');
 
     // Get total count for pagination
     const total = await Attempt.countDocuments(query);
