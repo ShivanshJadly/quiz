@@ -1,4 +1,5 @@
 import React from 'react'
+import heading from './heading'
 
 const Rule = () => {
   return (
